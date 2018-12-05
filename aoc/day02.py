@@ -20,4 +20,20 @@ class InventoryManagement:
         return factor_twos * factor_threes
 
     def common_letters(self):
-        pass
+        for index, id1 in enumerate(self.content):
+            for id2 in self.content[index + 1:]:
+                is_different_by_one_character, common_part = self._are_different_by_one_character(id1, id2)
+                if is_different_by_one_character:
+                    return common_part
+
+    def _are_different_by_one_character(self, texta, textb):
+        if texta == textb:
+            return False, None
+        difference = -1
+        for index, character in enumerate(texta):
+            if character != textb[index]:
+                if difference == -1:
+                    difference = index
+                else:
+                    return False, None
+        return True, "{}{}".format(texta[0:difference], texta[difference + 1:])

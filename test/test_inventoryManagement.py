@@ -17,5 +17,17 @@ class TestInventoryManagement(TestCase):
 
         self.assertEqual('fgij', inventory_management.common_letters())
 
+    def test_two_strings_are_different_by_one_character(self):
+        inventory_management = InventoryManagement.__new__(InventoryManagement)
+
+        self.assertEqual(False, inventory_management._are_different_by_one_character('foo', 'foo')[0])
+        self.assertEqual(False, inventory_management._are_different_by_one_character('foo', 'bar')[0])
+        self.assertEqual(False, inventory_management._are_different_by_one_character('abcde', 'edcba')[0])
+        self.assertEqual(False, inventory_management._are_different_by_one_character('abcde', 'abffe')[0])
+        self.assertEqual((True, 'abcd'), inventory_management._are_different_by_one_character('abcde', 'abcdf'))
+
     def test_run_checksum(self):
         print(InventoryManagement('../resources/aoc2.txt').checksum())
+
+    def test_run_common_letters(self):
+        print(InventoryManagement('../resources/aoc2.txt').common_letters())

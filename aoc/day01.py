@@ -7,6 +7,12 @@ class ChronalCalibration:
     def calibrate(self):
         return sum(self.content)
 
-    def find_double_frequency(self):
-        
-
+    def find_first_double_frequency(self):
+        unique_values = set()
+        total = 0
+        while True:
+            for value in self.content:
+                total += value
+                if total in unique_values:
+                    return total
+                unique_values.add(total)

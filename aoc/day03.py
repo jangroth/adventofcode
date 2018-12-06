@@ -19,12 +19,13 @@ class SliceThePatch:
             self._place_patch(patch)
 
     def _place_patch(self, patch):
-        for x in range(patch.x1, patch.x2 + 1):
-            for y in range(patch.y1, patch.x2 + 1):
-                if self.matrix[x][y] == '0':
-                    self.matrix[x] = self.matrix[x][:y] + '1' + self.matrix[x][y + 1:]
+        for row in range(patch.y1, patch.y2):
+            for column in range(patch.x1, patch.x2 ):
+                if self.matrix[row][column] == '0':
+                    symbol = '1'
                 else:
-                    self.matrix[x] = self.matrix[x][:y] + '2' + self.matrix[x][y + 1:]
+                    symbol = '2'
+                self.matrix[row] = self.matrix[row][:column] + symbol + self.matrix[row][column + 1:]
 
     def _line_to_patch(self, line):
         Patch = collections.namedtuple('Patch', ['x1', 'y1', 'x2', 'y2'])

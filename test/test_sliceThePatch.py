@@ -8,11 +8,11 @@ class TestSliceThePatch(TestCase):
 
     def test_convert_line_to_patch(self):
         slice_the_patch = SliceThePatch.__new__(SliceThePatch)
-        Patch = collections.namedtuple('Patch', ['x1', 'y1', 'x2', 'y2'])
+        Patch = collections.namedtuple('Patch', ['id', 'x1', 'y1', 'x2', 'y2'])
 
-        self.assertEqual(Patch(0, 0, 1, 1), slice_the_patch._line_to_patch('#1 @ 0,0: 1x1'))
-        self.assertEqual(Patch(1, 1, 2, 2), slice_the_patch._line_to_patch('#1 @ 1,1: 1x1'))
-        self.assertEqual(Patch(1, 3, 5, 7), slice_the_patch._line_to_patch('#1 @ 1,3: 4x4'))
+        self.assertEqual(Patch(1, 0, 0, 1, 1), slice_the_patch._line_to_patch('#1 @ 0,0: 1x1'))
+        self.assertEqual(Patch(2, 1, 1, 2, 2), slice_the_patch._line_to_patch('#2 @ 1,1: 1x1'))
+        self.assertEqual(Patch(3, 1, 3, 5, 7), slice_the_patch._line_to_patch('#3 @ 1,3: 4x4'))
 
     def test_create_empty_matrix(self):
         slice_the_patch = SliceThePatch.__new__(SliceThePatch)
@@ -23,9 +23,9 @@ class TestSliceThePatch(TestCase):
     def test_place_single_patch(self):
         slice_the_patch = SliceThePatch.__new__(SliceThePatch)
         slice_the_patch.matrix = slice_the_patch._create_empty_matrix(4)
-        Patch = collections.namedtuple('Patch', ['x1', 'y1', 'x2', 'y2'])
+        Patch = collections.namedtuple('Patch', ['id', 'x1', 'y1', 'x2', 'y2'])
 
-        slice_the_patch._place_patch(Patch(1, 1, 3, 3))
+        slice_the_patch._place_patch(Patch(1, 1, 1, 3, 3))
 
         self.assertEqual(['0000', '0110', '0110', '0000'], slice_the_patch.matrix)
 
@@ -42,10 +42,10 @@ class TestSliceThePatch(TestCase):
     def test_place_double_patch(self):
         slice_the_patch = SliceThePatch.__new__(SliceThePatch)
         slice_the_patch.matrix = slice_the_patch._create_empty_matrix(4)
-        Patch = collections.namedtuple('Patch', ['x1', 'y1', 'x2', 'y2'])
+        Patch = collections.namedtuple('Patch', ['id', 'x1', 'y1', 'x2', 'y2'])
 
-        slice_the_patch._place_patch(Patch(1, 1, 3, 3))
-        slice_the_patch._place_patch(Patch(1, 1, 3, 3))
+        slice_the_patch._place_patch(Patch(1, 1, 1, 3, 3))
+        slice_the_patch._place_patch(Patch(2, 1, 1, 3, 3))
 
         self.assertEqual(['0000', '0220', '0220', '0000'], slice_the_patch.matrix)
 

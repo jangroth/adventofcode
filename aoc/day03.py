@@ -20,21 +20,22 @@ class SliceThePatch:
 
     def _place_patch(self, patch):
         for row in range(patch.y1, patch.y2):
-            for column in range(patch.x1, patch.x2 ):
-                if self.matrix[row][column] == '0':
-                    symbol = '1'
-                else:
-                    symbol = '2'
-                self.matrix[row] = self.matrix[row][:column] + symbol + self.matrix[row][column + 1:]
+            for column in range(patch.x1, patch.x2):
+                this_square = self.matrix[row][column]
+                if this_square == '0':
+                    self.matrix[row] = self.matrix[row][:column] + '1' + self.matrix[row][column + 1:]
+                elif this_square == '1':
+                    self.matrix[row] = self.matrix[row][:column] + '2' + self.matrix[row][column + 1:]
 
     def _line_to_patch(self, line):
-        Patch = collections.namedtuple('Patch', ['x1', 'y1', 'x2', 'y2'])
+        Patch = collections.namedtuple('Patch', ['id', 'x1', 'y1', 'x2', 'y2'])
         line_elements = line.split()
+        id = int(line_elements[0][1:])
         x1 = int(line_elements[2].split(',')[0])
         y1 = int(line_elements[2].split(',')[1][:-1])
         x2 = int(line_elements[3].split('x')[0]) + x1
         y2 = int(line_elements[3].split('x')[1]) + y1
-        return Patch(x1, y1, x2, y2)
+        return Patch(id=id, x1=x1, y1=y1, x2=x2, y2=y2)
 
     def count_overlap(self):
         self._place_patches()

@@ -15,13 +15,16 @@ class SliceThePatch:
         return ['0' * size for _ in range(size)]
 
     def _place_patches(self):
-        for patch in patches:
+        for patch in self.patches:
             self._place_patch(patch)
 
     def _place_patch(self, patch):
-        for x in range(patch.x1, patch.x2):
-            for y in range(patch.y1, patch.x2):
-                self.matrix[x][y] = '1'
+        for x in range(patch.x1, patch.x2 + 1):
+            for y in range(patch.y1, patch.x2 + 1):
+                if self.matrix[x][y] == '0':
+                    self.matrix[x] = self.matrix[x][:y] + '1' + self.matrix[x][y + 1:]
+                else:
+                    self.matrix[x] = self.matrix[x][:y] + '2' + self.matrix[x][y + 1:]
 
     def _line_to_patch(self, line):
         Patch = collections.namedtuple('Patch', ['x1', 'y1', 'x2', 'y2'])
@@ -33,4 +36,5 @@ class SliceThePatch:
         return Patch(x1, y1, x2, y2)
 
     def count_overlap(self):
-        pass
+        self._place_patches()
+        return sum([line.count('2') for line in self.matrix])

@@ -29,8 +29,20 @@ class TestSliceThePatch(TestCase):
 
         self.assertEqual(['0000', '0110', '0110', '0000'], slice_the_patch.matrix)
 
-    def ignore_test_count_overlap(self):
+    def test_place_double_patch(self):
+        slice_the_patch = SliceThePatch.__new__(SliceThePatch)
+        slice_the_patch.matrix = slice_the_patch._create_empty_matrix(4)
+        Patch = collections.namedtuple('Patch', ['x1', 'y1', 'x2', 'y2'])
+
+        slice_the_patch._place_patch(Patch(1, 1, 2, 2))
+        slice_the_patch._place_patch(Patch(1, 1, 2, 2))
+
+        self.assertEqual(['0000', '0220', '0220', '0000'], slice_the_patch.matrix)
+
+    def test_count_overlap(self):
         slice_the_patch = SliceThePatch.__new__(SliceThePatch)
         slice_the_patch.content = ['#1 @ 1,3: 4x4', '#2 @ 3,1: 4x4', '#3 @ 5,5: 2x2']
+        slice_the_patch.patches = [slice_the_patch._line_to_patch(x) for x in slice_the_patch.content]
+        slice_the_patch.matrix = slice_the_patch._create_empty_matrix(4)
 
         self.assertEqual(4, slice_the_patch.count_overlap())

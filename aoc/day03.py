@@ -10,6 +10,7 @@ class SliceThePatch:
         self.content = [x.strip() for x in content]
         self.patches = [self._line_to_patch(x) for x in self.content]
         self.matrix = self._create_empty_matrix(1000)
+        self.overlapping_patches = set()
 
     def _create_empty_matrix(self, size):
         return ['0' * size for _ in range(size)]
@@ -23,9 +24,11 @@ class SliceThePatch:
             for column in range(patch.x1, patch.x2):
                 this_square = self.matrix[row][column]
                 if this_square == '0':
-                    self.matrix[row] = self.matrix[row][:column] + '1' + self.matrix[row][column + 1:]
-                elif this_square == '1':
-                    self.matrix[row] = self.matrix[row][:column] + '2' + self.matrix[row][column + 1:]
+                    self.matrix[row] = self.matrix[row][:column] + str(patch.id) + self.matrix[row][column + 1:]
+                elif this_square != '#':
+                    self.matrix[row] = self.matrix[row][:column] + '#' + self.matrix[row][column + 1:]
+                    self.overlapping_patches.add(this_square)
+                    self.overlapping_patches.add(patch.id)
 
     def _line_to_patch(self, line):
         Patch = collections.namedtuple('Patch', ['id', 'x1', 'y1', 'x2', 'y2'])
@@ -39,4 +42,9 @@ class SliceThePatch:
 
     def count_overlap(self):
         self._place_patches()
-        return sum([line.count('2') for line in self.matrix])
+        return sum([line.count('#') for line in self.matrix])
+
+    def find_non_overlapping_patches(self):
+        self._place_patches()
+        print(self.overlapping_patches)
+        return []

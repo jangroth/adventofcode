@@ -34,7 +34,7 @@ class TestSliceThePatch(TestCase):
 
     def test_place_another_single_patch(self):
         self.stp.content = ['#1 @ 3,2: 5x4']
-        self.stp.patches = {self.stp._line_to_patch(x).id: self.stp._line_to_patch(x) for x in self.stp.content}
+        self.stp.patches = [self.stp._line_to_patch(x) for x in self.stp.content]
         self.stp.matrix = self.stp._create_empty_matrix(9)
 
         self.stp._place_patches()
@@ -62,20 +62,22 @@ class TestSliceThePatch(TestCase):
 
     def test_count_overlap(self):
         self.stp.content = ['#1 @ 1,3: 4x4', '#2 @ 3,1: 4x4', '#3 @ 5,5: 2x2']
-        self.stp.patches = {self.stp._line_to_patch(x).id: self.stp._line_to_patch(x) for x in self.stp.content}
+        self.stp.patches = [self.stp._line_to_patch(x) for x in self.stp.content]
         self.stp.matrix = self.stp._create_empty_matrix(10)
 
         self.assertEqual(4, self.stp.count_overlap())
 
     def test_find_non_overlapping_patches(self):
         self.stp.content = ['#1 @ 1,3: 4x4', '#2 @ 3,1: 4x4', '#3 @ 5,5: 2x2']
-        self.stp.patches = {self.stp._line_to_patch(x).id: self.stp._line_to_patch(x) for x in self.stp.content}
+        self.stp.patches = [self.stp._line_to_patch(x) for x in self.stp.content]
         self.stp.matrix = self.stp._create_empty_matrix(10)
 
         self.assertIn('#3', self.stp.find_non_overlapping_patches())
+        self.stp.print_matrix()
 
     def test_run_count_overlap(self):
         print(SliceThePatch('../resources/aoc3.txt').count_overlap())
 
     def test_run_find_non_overlap(self):
-        print(SliceThePatch('../resources/aoc3.txt').find_non_overlapping_patches())
+        stp = SliceThePatch('../resources/aoc3.txt')
+        print(stp.find_non_overlapping_patches())

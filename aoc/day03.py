@@ -8,32 +8,34 @@ class SliceThePatch:
         with open(path) as f:
             content = f.readlines()
         self.content = [x.strip() for x in content]
-        self.patches = [self._line_to_patch(x) for x in self.content]
+        # self.patches = [self._line_to_patch(x) for x in self.content]
+        self.patches = {self._line_to_patch(x).id: self._line_to_patch(x) for x in self.content}
         self.matrix = self._create_empty_matrix(1000)
-        self.overlapping_patches = set()
+        self.non_overlapping_patches = set()
 
     def _create_empty_matrix(self, size):
-        return ['0' * size for _ in range(size)]
+        return [['0' for _ in range(size)] for _ in range(size)]
 
     def _place_patches(self):
-        for patch in self.patches:
+        for patch in self.patches.values():
             self._place_patch(patch)
 
     def _place_patch(self, patch):
+        self.non_overlapping_patches.add(patch.id)
         for row in range(patch.y1, patch.y2):
             for column in range(patch.x1, patch.x2):
                 this_square = self.matrix[row][column]
                 if this_square == '0':
-                    self.matrix[row] = self.matrix[row][:column] + str(patch.id) + self.matrix[row][column + 1:]
+                    self.matrix[row][column] = patch.id
                 elif this_square != '#':
-                    self.matrix[row] = self.matrix[row][:column] + '#' + self.matrix[row][column + 1:]
-                    self.overlapping_patches.add(this_square)
-                    self.overlapping_patches.add(patch.id)
+                    self.matrix[row][column] = '#'
+                    self.non_overlapping_patches.discard(patch.id)
+                    self.non_overlapping_patches.discard(this_square)
 
     def _line_to_patch(self, line):
         Patch = collections.namedtuple('Patch', ['id', 'x1', 'y1', 'x2', 'y2'])
         line_elements = line.split()
-        id = int(line_elements[0][1:])
+        id = line_elements[0]
         x1 = int(line_elements[2].split(',')[0])
         y1 = int(line_elements[2].split(',')[1][:-1])
         x2 = int(line_elements[3].split('x')[0]) + x1
@@ -46,5 +48,4 @@ class SliceThePatch:
 
     def find_non_overlapping_patches(self):
         self._place_patches()
-        print(self.overlapping_patches)
-        return []
+        return self.non_overlapping_patches

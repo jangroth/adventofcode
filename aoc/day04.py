@@ -2,8 +2,6 @@ from collections import defaultdict
 
 
 class ReposeRecord:
-    MATRIX_SIZE = 1000
-
     def __init__(self, path):
         with open(path) as f:
             content = f.readlines()

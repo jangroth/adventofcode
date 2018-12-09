@@ -20,5 +20,18 @@ class TestAlchemicalReduction(TestCase):
     def test_can_react(self):
         self.assertEqual('dabCBAcaDA', self.ar._react('dabAcCaCBAcCcaDA'))
 
-    def test_run_react_polymer(self):
+    def test_find_components(self):
+        self.assertEqual('abcd', self.ar._find_components('dabAcCaCBAcCcaDA'))
+
+    def test_improve_polymer(self):
+        self.ar.content = ['dabAcCaCBAcCcaDA']
+
+        result = self.ar.improve_polymer()
+
+        self.assertEqual(('c', 4), result)
+
+    def ignore_test_run_react_polymer(self):
         print(len(AlchemicalReduction('../resources/aoc5.txt').react_polymer()))
+
+    def test_run_improve_polymer(self):
+        print(len(AlchemicalReduction('../resources/aoc5.txt').improve_polymer()))

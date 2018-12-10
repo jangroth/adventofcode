@@ -1,3 +1,7 @@
+import string
+from collections import defaultdict
+
+
 class ChronalCoordinates:
     MATRIX_SIZE = 10
 
@@ -10,16 +14,19 @@ class ChronalCoordinates:
     def _create_empty_matrix(self, size):
         return [['0' for _ in range(size)] for _ in range(size)]
 
+    def _place_coordinates(self):
+        for coordinate in self.content
+        pass
+
     def _find_closest_coordinate(self, row, column):
         if self.matrix[row][column].isupper():
             return self.matrix[row][column]
-        is_complete = False
         radius = 1
         closest_coordinates = []
-        while not is_complete:
-            for row, column in self._chronal_generator(row, column, radius, self.MATRIX_SIZE):
-                if self.matrix[row][column].isupper():
-                    closest_coordinates.append(self.matrix[row][column].lower())
+        while True:
+            for test_row, test_column in self._chronal_generator(row, column, radius, self.MATRIX_SIZE):
+                if self.matrix[test_row][test_column].isupper():
+                    closest_coordinates.append(self.matrix[test_row][test_column].lower())
             if not closest_coordinates:
                 radius += 1
             elif len(closest_coordinates) == 1:
@@ -33,38 +40,62 @@ class ChronalCoordinates:
                 closest_coordinate = self._find_closest_coordinate(row, column)
                 self.matrix[row][column] = closest_coordinate
 
+    def _remove_non_candidates(self):
+        non_candidates = set()
+        for i in range(self.MATRIX_SIZE):
+            non_candidates.add(self.matrix[0][i])
+            non_candidates.add(self.matrix[self.MATRIX_SIZE - 1][i])
+            non_candidates.add(self.matrix[i][0])
+            non_candidates.add(self.matrix[i][self.MATRIX_SIZE - 1])
+        non_candidates |= set(list(string.ascii_uppercase))
+        non_candidates |= {'.', '0'}
+
+        for row in range(self.MATRIX_SIZE):
+            for column in range(self.MATRIX_SIZE):
+                if self.matrix[row][column] in non_candidates:
+                    self.matrix[row][column] = None
+
     def find_largest_area(self):
-        pass
+        self._place_coordinates()
+        self._remove_non_candidates()
+        finites = defaultdict(int)
+        for row in range(self.MATRIX_SIZE):
+            for column in range(self.MATRIX_SIZE):
+                value = self.matrix[row][column]
+                if value:
+                    finites[value] += 1
+        return sorted(finites.items(), key=lambda x: x[1], reverse=True)[0]
 
     def _chronal_generator(self, row, column, distance, max):
-        current_dir = 'east'
-        current_column = column - distance
+        current_dir = 'southeast'
+        current_column = column
         current_row = row - distance
         is_complete = False
         while not is_complete:
             if 0 <= current_row < max and 0 <= current_column < max:
                 yield current_row, current_column
-            if current_dir == 'east':
+            if current_dir == 'southeast':
                 if current_column < column + distance:
+                    current_row += 1
                     current_column += 1
                 else:
-                    current_row += 1
-                    current_dir = 'south'
-            elif current_dir == 'south':
+                    current_dir = 'southwest'
+            if current_dir == 'southwest':
                 if current_row < row + distance:
                     current_row += 1
-                else:
                     current_column -= 1
-                    current_dir = 'west'
-            elif current_dir == 'west':
+                else:
+                    current_dir = 'northwest'
+            if current_dir == 'northwest':
                 if current_column > column - distance:
+                    current_row -= 1
                     current_column -= 1
                 else:
+                    current_dir = 'northeast'
+            if current_dir == 'northeast':
+                if current_row > row - distance and current_row != row - distance + 1 and current_column != column - 1:
                     current_row -= 1
-                    current_dir = 'north'
-            elif current_dir == 'north':
-                if current_row > row - distance:
-                    current_row -= 1
+                    current_column += 1
                 else:
                     is_complete = True
 
@@ -73,3 +104,4 @@ class ChronalCoordinates:
             for row in range(11):
                 print(self.matrix[row][column], end='', flush=True)
             print()
+

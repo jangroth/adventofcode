@@ -15,8 +15,9 @@ class ChronalCoordinates:
         return [['0' for _ in range(size)] for _ in range(size)]
 
     def _place_coordinates(self):
-        for coordinate in self.content
-        pass
+        for index, coordinate in enumerate(self.content):
+            row, column = coordinate.replace(' ', '').split(',')
+            self.matrix[row][column] = 'C{}'.format(index)
 
     def _find_closest_coordinate(self, row, column):
         if self.matrix[row][column].isupper():
@@ -104,4 +105,3 @@ class ChronalCoordinates:
             for row in range(11):
                 print(self.matrix[row][column], end='', flush=True)
             print()
-

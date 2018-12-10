@@ -16,7 +16,7 @@ class ChronalCoordinates:
 
     def _place_coordinates(self):
         for index, coordinate in enumerate(self.content):
-            row, column = coordinate.replace(' ', '').split(',')
+            row, column = [int(x) for x in coordinate.replace(' ', '').split(',')]
             self.matrix[row][column] = 'C{}'.format(index)
 
     def _find_closest_coordinate(self, row, column):

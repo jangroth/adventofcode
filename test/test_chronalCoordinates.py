@@ -50,7 +50,17 @@ class TestChronalCoordinates(TestCase):
         result = [(x, y) for x, y in self.cc._chronal_generator(2, 2, 2, 3)]
         self.assertEqual([(0, 2), (2, 0), (1, 1)], result)
 
-    def
+    def test_place_coordinates(self):
+        self.cc.MATRIX_SIZE = 10
+        self.cc.matrix = self.cc._create_empty_matrix(11)
+        self.cc.content = ['1, 1', '8, 3', '5, 5']
+
+        self.cc._place_coordinates()
+
+        self.assertEqual('C0', self.cc.matrix[1][1])
+        self.assertEqual('C1', self.cc.matrix[8][3])
+        self.assertEqual('C2', self.cc.matrix[5][5])
+
 
     def test_find_closest(self):
         self.cc.MATRIX_SIZE = 10

@@ -19,7 +19,7 @@ class ChronalCoordinates:
         while not is_complete:
             for row, column in self._chronal_generator(row, column, radius, self.MATRIX_SIZE):
                 if self.matrix[row][column].isupper():
-                    closest_coordinates.append(self.matrix[row][column])
+                    closest_coordinates.append(self.matrix[row][column].lower())
             if not closest_coordinates:
                 radius += 1
             elif len(closest_coordinates) == 1:
@@ -29,8 +29,9 @@ class ChronalCoordinates:
 
     def _fill_matrix(self):
         for row in range(self.MATRIX_SIZE):
-            for colum in range(self.MATRIX_SIZE):
-                self.matrix[row][colum] = self._find_closest_coordinate(row, colum)
+            for column in range(self.MATRIX_SIZE):
+                closest_coordinate = self._find_closest_coordinate(row, column)
+                self.matrix[row][column] = closest_coordinate
 
     def find_largest_area(self):
         pass
@@ -41,7 +42,7 @@ class ChronalCoordinates:
         current_row = row - distance
         is_complete = False
         while not is_complete:
-            if 0 <= current_row <= max and 0 <= current_column <= max:
+            if 0 <= current_row < max and 0 <= current_column < max:
                 yield current_row, current_column
             if current_dir == 'east':
                 if current_column < column + distance:
@@ -66,3 +67,9 @@ class ChronalCoordinates:
                     current_row -= 1
                 else:
                     is_complete = True
+
+    def print_matrix(self):
+        for column in range(11):
+            for row in range(11):
+                print(self.matrix[row][column], end='', flush=True)
+            print()

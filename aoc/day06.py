@@ -26,8 +26,8 @@ class ChronalCoordinates:
         closest_coordinates = []
         while True:
             for test_row, test_column in self._chronal_generator(row, column, radius, self.MATRIX_SIZE):
-                if self.matrix[test_row][test_column].isupper():
-                    closest_coordinates.append(self.matrix[test_row][test_column].lower())
+                if self.matrix[test_row][test_column].startswith('C'):
+                    closest_coordinates.append(self.matrix[test_row][test_column][1:])
             if not closest_coordinates:
                 radius += 1
             elif len(closest_coordinates) == 1:
@@ -42,18 +42,16 @@ class ChronalCoordinates:
                 self.matrix[row][column] = closest_coordinate
 
     def _remove_non_candidates(self):
-        non_candidates = set()
+        non_candidates = {'.'}
         for i in range(self.MATRIX_SIZE):
             non_candidates.add(self.matrix[0][i])
             non_candidates.add(self.matrix[self.MATRIX_SIZE - 1][i])
             non_candidates.add(self.matrix[i][0])
             non_candidates.add(self.matrix[i][self.MATRIX_SIZE - 1])
-        non_candidates |= set(list(string.ascii_uppercase))
-        non_candidates |= {'.', '0'}
-
         for row in range(self.MATRIX_SIZE):
             for column in range(self.MATRIX_SIZE):
-                if self.matrix[row][column] in non_candidates:
+                current_spot = self.matrix[row][column]
+                if current_spot in non_candidates or current_spot.startswith('C'):
                     self.matrix[row][column] = None
 
     def find_largest_area(self):
@@ -73,6 +71,7 @@ class ChronalCoordinates:
         current_row = row - distance
         is_complete = False
         while not is_complete:
+            print(current_row, current_column)
             if 0 <= current_row < max and 0 <= current_column < max:
                 yield current_row, current_column
             if current_dir == 'southeast':

@@ -103,15 +103,10 @@ class TestChronalCoordinates(TestCase):
 
     def test_remove_non_candidates(self):
         self.cc.MATRIX_SIZE = 11
+        self.cc.content = ['1, 1', '1, 6', '8, 3', '3, 4', '5, 5', '8, 9']
         self.cc.matrix = self.cc._create_empty_matrix(11)
-        self.cc.matrix[1][1] = 'A'
-        self.cc.matrix[1][6] = 'B'
-        self.cc.matrix[8][3] = 'C'
-        self.cc.matrix[3][4] = 'D'
-        self.cc.matrix[5][5] = 'E'
-        self.cc.matrix[8][9] = 'F'
-
         self.cc._fill_matrix()
+        self.cc._place_coordinates()
         self.cc._remove_non_candidates()
 
         self.assertEqual([[None, None, None, None, None, None, None, None, None, None, None],
@@ -128,17 +123,12 @@ class TestChronalCoordinates(TestCase):
 
     def test_find_largest_area(self):
         self.cc.MATRIX_SIZE = 11
+        self.cc.content = ['1, 1', '1, 6', '8, 3', '3, 4', '5, 5', '8, 9']
         self.cc.matrix = self.cc._create_empty_matrix(11)
-        self.cc.matrix[1][1] = 'A'
-        self.cc.matrix[1][6] = 'B'
-        self.cc.matrix[8][3] = 'C'
-        self.cc.matrix[3][4] = 'D'
-        self.cc.matrix[5][5] = 'E'
-        self.cc.matrix[8][9] = 'F'
-
+        self.cc._place_coordinates()
         self.cc._fill_matrix()
 
-        self.assertEqual(('e', 16), self.cc.find_largest_area())
+        self.assertEqual(('4', 16), self.cc.find_largest_area())
 
     def test_run_find_largest_area(self):
         print(ChronalCoordinates('../resources/aoc6.txt').find_largest_area())

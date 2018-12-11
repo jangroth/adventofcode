@@ -11,7 +11,7 @@ class ChronalCoordinates:
         self.matrix = self._create_empty_matrix(self.MATRIX_SIZE)
 
     def _create_empty_matrix(self, size):
-        return [['0' for _ in range(size)] for _ in range(size)]
+        return [[' ' for _ in range(size)] for _ in range(size)]
 
     def _place_coordinates(self):
         for index, coordinate in enumerate(self.content):
@@ -25,6 +25,7 @@ class ChronalCoordinates:
         closest_coordinates = []
         while True:
             for test_row, test_column in self._chronal_generator(row, column, radius, self.MATRIX_SIZE):
+                print(test_row, test_column, radius, self.matrix[test_row][test_column].startswith('C'))
                 if self.matrix[test_row][test_column].startswith('C'):
                     closest_coordinates.append(self.matrix[test_row][test_column][1:])
             if not closest_coordinates:
@@ -83,7 +84,7 @@ class ChronalCoordinates:
                 current_dir += 1
 
     def print_matrix(self):
-        for column in range(11):
-            for row in range(11):
-                print(self.matrix[row][column], end='', flush=True)
+        for row in range(11):
+            for column in range(11):
+                print(':{} '.format(self.matrix[row][column]), end='', flush=True)
             print()

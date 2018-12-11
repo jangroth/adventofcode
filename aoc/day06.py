@@ -1,4 +1,3 @@
-import string
 from collections import defaultdict
 
 
@@ -66,38 +65,22 @@ class ChronalCoordinates:
         return sorted(finites.items(), key=lambda x: x[1], reverse=True)[0]
 
     def _chronal_generator(self, row, column, distance, max):
-        current_dir = 'southeast'
-        current_column = column
-        current_row = row - distance
-        is_complete = False
-        while not is_complete:
-            print(current_row, current_column)
+        directions = [(1, 1), (1, -1), (-1, -1), (-1, 1)]
+        current_dir = 0
+        current_row, current_column = row - distance, column
+        while current_dir < 4:
+            current_row += directions[current_dir][0]
+            current_column += directions[current_dir][1]
             if 0 <= current_row < max and 0 <= current_column < max:
                 yield current_row, current_column
-            if current_dir == 'southeast':
-                if current_column < column + distance:
-                    current_row += 1
-                    current_column += 1
-                else:
-                    current_dir = 'southwest'
-            if current_dir == 'southwest':
-                if current_row < row + distance:
-                    current_row += 1
-                    current_column -= 1
-                else:
-                    current_dir = 'northwest'
-            if current_dir == 'northwest':
-                if current_column > column - distance:
-                    current_row -= 1
-                    current_column -= 1
-                else:
-                    current_dir = 'northeast'
-            if current_dir == 'northeast':
-                if current_row > row - distance and current_row != row - distance + 1 and current_column != column - 1:
-                    current_row -= 1
-                    current_column += 1
-                else:
-                    is_complete = True
+
+            if (
+                    (current_dir == 0 and current_row == row) or
+                    (current_dir == 1 and current_column == column) or
+                    (current_dir == 2 and current_row == row) or
+                    (current_dir == 3 and current_column == column)
+            ):
+                current_dir += 1
 
     def print_matrix(self):
         for column in range(11):

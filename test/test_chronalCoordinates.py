@@ -14,42 +14,6 @@ class TestChronalCoordinates(TestCase):
                           ['0', '0', '0'],
                           ['0', '0', '0']], self.cc._create_empty_matrix(3))
 
-    def test_find_coordinate_if_coordinate_for_coordinate(self):
-        self.cc.matrix = self.cc._create_empty_matrix(3)
-        self.cc.matrix[0][0] = 'A'
-
-        self.assertEqual('A', self.cc._find_closest_coordinate(0, 0))
-
-    def test_find_coordinate_A_if_coordinate_is_neighbouring(self):
-        self.cc.matrix = self.cc._create_empty_matrix(3)
-        self.cc.matrix[1][1] = 'A'
-
-        self.assertEqual('a', self.cc._find_closest_coordinate(0, 0))
-
-    def test_find_coordinate_dot_if_two_coordinates_are_neighbouring(self):
-        self.cc.matrix = self.cc._create_empty_matrix(5)
-        self.cc.matrix[2][0] = 'A'
-        self.cc.matrix[0][2] = 'B'
-
-        self.assertEqual('.', self.cc._find_closest_coordinate(0, 0))
-
-    def test_single_chronal_generator(self):
-        result = [(x, y) for x, y in self.cc._chronal_generator(2, 2, 1, 4)]
-        self.assertEqual([(1, 2), (2, 3), (3, 2), (2, 1)], result)
-
-    def test_double_chronal_generator(self):
-        result = [(x, y) for x, y in self.cc._chronal_generator(2, 2, 2, 5)]
-        self.assertEqual(
-            [(0, 2), (1, 3), (2, 4), (3, 3), (4, 2), (3, 1), (2, 0), (1, 1)], result)
-
-    def test_chronal_generator_dont_go_into_negative(self):
-        result = [(x, y) for x, y in self.cc._chronal_generator(0, 0, 1, 3)]
-        self.assertEqual([(0, 1), (1, 0)], result)
-
-    def test_chronal_generator_dont_go_over_maximum(self):
-        result = [(x, y) for x, y in self.cc._chronal_generator(2, 2, 2, 3)]
-        self.assertEqual([(0, 2), (2, 0), (1, 1)], result)
-
     def test_place_coordinates(self):
         self.cc.MATRIX_SIZE = 10
         self.cc.matrix = self.cc._create_empty_matrix(11)
@@ -61,6 +25,41 @@ class TestChronalCoordinates(TestCase):
         self.assertEqual('C1', self.cc.matrix[8][3])
         self.assertEqual('C2', self.cc.matrix[5][5])
 
+    def test_single_chronal_generator(self):
+        result = [(x, y) for x, y in self.cc._chronal_generator(2, 2, 1, 4)]
+        self.assertEqual([(2, 3), (3, 2), (2, 1), (1, 2)], result)
+
+    def test_double_chronal_generator(self):
+        result = [(x, y) for x, y in self.cc._chronal_generator(2, 2, 2, 5)]
+        self.assertEqual(
+            [(1, 3), (2, 4), (3, 3), (4, 2), (3, 1), (2, 0), (1, 1), (0, 2)], result)
+
+    def test_chronal_generator_dont_go_into_negative(self):
+        result = [(x, y) for x, y in self.cc._chronal_generator(0, 0, 1, 3)]
+        self.assertEqual([(0, 1), (1, 0)], result)
+
+    def test_chronal_generator_dont_go_over_maximum(self):
+        result = [(x, y) for x, y in self.cc._chronal_generator(2, 2, 2, 3)]
+        self.assertEqual([(2, 0), (1, 1), (0, 2)], result)
+
+    def test_find_coordinate_if_coordinate_for_coordinate(self):
+        self.cc.matrix = self.cc._create_empty_matrix(3)
+        self.cc.matrix[0][0] = 'A'
+
+        self.assertEqual('A', self.cc._find_closest_coordinate(0, 0))
+
+    def test_find_coordinate_A_if_coordinate_is_neighbouring(self):
+        self.cc.matrix = self.cc._create_empty_matrix(3)
+        self.cc.matrix[1][1] = 'C0'
+
+        self.assertEqual('a', self.cc._find_closest_coordinate(0, 0))
+
+    def test_find_coordinate_dot_if_two_coordinates_are_neighbouring(self):
+        self.cc.matrix = self.cc._create_empty_matrix(5)
+        self.cc.matrix[2][0] = 'A'
+        self.cc.matrix[0][2] = 'B'
+
+        self.assertEqual('.', self.cc._find_closest_coordinate(0, 0))
 
     def test_find_closest(self):
         self.cc.MATRIX_SIZE = 10

@@ -68,56 +68,46 @@ class TestChronalCoordinates(TestCase):
         self.cc.matrix = self.cc._create_empty_matrix(11)
         self.cc.content = ['1, 1', '8, 3', '5, 5']
         self.cc._place_coordinates()
-        self.cc.print_matrix()
 
-        # self.assertEqual('0', self.cc._find_closest_coordinate(0, 0))
-        # self.assertEqual('0', self.cc._find_closest_coordinate(1, 0))
-        # self.assertEqual('0', self.cc._find_closest_coordinate(2, 0))
-        # self.assertEqual('0', self.cc._find_closest_coordinate(3, 0))
-        # self.assertEqual('0', self.cc._find_closest_coordinate(4, 0))
-        # self.assertEqual('.', self.cc._find_closest_coordinate(5, 0))
-        self.assertEqual('2', self.cc._find_closest_coordinate(6, 0))
+        self.assertEqual(['0', '0', '0', '0', '0', '.', '1'], [self.cc._find_closest_coordinate(x, y) for x, y in [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0)]])
 
     def test_fill_matrix(self):
         self.cc.MATRIX_SIZE = 11
         self.cc.matrix = self.cc._create_empty_matrix(11)
-        self.cc.matrix[1][1] = 'A'
-        self.cc.matrix[1][6] = 'B'
-        self.cc.matrix[8][3] = 'C'
-        self.cc.matrix[3][4] = 'D'
-        self.cc.matrix[5][5] = 'E'
-        self.cc.matrix[8][9] = 'F'
+        self.cc.content = ['1, 1', '1, 6', '8, 3', '3, 4', '5, 5', '8, 9']
+        self.cc._place_coordinates()
 
         self.cc._fill_matrix()
 
-        self.assertEqual([['a', 'a', 'a', 'a', '.', 'b', 'b', 'b', 'b', 'b', 'b'],
-                          ['a', 'A', 'a', 'a', '.', 'b', 'B', 'b', 'b', 'b', 'b'],
-                          ['a', 'a', 'a', 'd', 'd', '.', 'b', 'b', 'b', 'b', 'b'],
-                          ['a', 'a', 'd', 'd', 'D', 'd', '.', '.', '.', '.', '.'],
-                          ['a', 'a', 'd', 'd', 'd', 'e', 'e', 'e', 'e', 'f', 'f'],
-                          ['.', '.', 'e', 'e', 'e', 'E', 'e', 'e', 'e', 'f', 'f'],
-                          ['c', 'c', 'c', 'c', 'e', 'e', 'e', 'e', 'f', 'f', 'f'],
-                          ['c', 'c', 'c', 'c', 'c', 'e', 'e', 'f', 'f', 'f', 'f'],
-                          ['c', 'c', 'c', 'C', 'c', 'c', '.', 'f', 'f', 'F', 'f'],
-                          ['c', 'c', 'c', 'c', 'c', 'c', '.', 'f', 'f', 'f', 'f'],
-                          ['c', 'c', 'c', 'c', 'c', 'c', '.', 'f', 'f', 'f', 'f']], self.cc.matrix)
+        self.assertEqual([['0', '0', '0', '0', '.', '1', '1', '1', '1', '1', '1'],
+                          ['0', 'C0', '0', '0', '.', '1', 'C1', '1', '1', '1', '1'],
+                          ['0', '0', '0', '3', '3', '.', '1', '1', '1', '1', '1'],
+                          ['0', '0', '3', '3', 'C3', '3', '.', '.', '.', '.', '.'],
+                          ['0', '0', '3', '3', '3', '4', '4', '4', '4', '5', '5'],
+                          ['.', '.', '4', '4', '4', 'C4', '4', '4', '4', '5', '5'],
+                          ['2', '2', '2', '2', '4', '4', '4', '4', '5', '5', '5'],
+                          ['2', '2', '2', '2', '2', '4', '4', '5', '5', '5', '5'],
+                          ['2', '2', '2', 'C2', '2', '2', '.', '5', '5', 'C5', '5'],
+                          ['2', '2', '2', '2', '2', '2', '.', '5', '5', '5', '5'],
+                          ['2', '2', '2', '2', '2', '2', '.', '5', '5', '5', '5']], self.cc.matrix)
 
     def test_remove_non_candidates(self):
         self.cc.MATRIX_SIZE = 11
         self.cc.content = ['1, 1', '1, 6', '8, 3', '3, 4', '5, 5', '8, 9']
         self.cc.matrix = self.cc._create_empty_matrix(11)
-        self.cc._fill_matrix()
         self.cc._place_coordinates()
+        self.cc._fill_matrix()
+
         self.cc._remove_non_candidates()
 
         self.assertEqual([[None, None, None, None, None, None, None, None, None, None, None],
                           [None, None, None, None, None, None, None, None, None, None, None],
-                          [None, None, None, 'd', 'd', None, None, None, None, None, None],
-                          [None, None, 'd', 'd', None, 'd', None, None, None, None, None],
-                          [None, None, 'd', 'd', 'd', 'e', 'e', 'e', 'e', None, None],
-                          [None, None, 'e', 'e', 'e', None, 'e', 'e', 'e', None, None],
-                          [None, None, None, None, 'e', 'e', 'e', 'e', None, None, None],
-                          [None, None, None, None, None, 'e', 'e', None, None, None, None],
+                          [None, None, None, '3', '3', None, None, None, None, None, None],
+                          [None, None, '3', '3', None, '3', None, None, None, None, None],
+                          [None, None, '3', '3', '3', '4', '4', '4', '4', None, None],
+                          [None, None, '4', '4', '4', None, '4', '4', '4', None, None],
+                          [None, None, None, None, '4', '4', '4', '4', None, None, None],
+                          [None, None, None, None, None, '4', '4', None, None, None, None],
                           [None, None, None, None, None, None, None, None, None, None, None],
                           [None, None, None, None, None, None, None, None, None, None, None],
                           [None, None, None, None, None, None, None, None, None, None, None]], self.cc.matrix)

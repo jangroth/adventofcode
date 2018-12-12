@@ -2,7 +2,7 @@ from collections import defaultdict
 
 
 class ChronalCoordinates:
-    MATRIX_SIZE = 10
+    MATRIX_SIZE = 400
 
     def __init__(self, path):
         with open(path) as f:
@@ -25,7 +25,7 @@ class ChronalCoordinates:
         closest_coordinates = []
         while True:
             for test_row, test_column in self._chronal_generator(row, column, radius, self.MATRIX_SIZE):
-                print(test_row, test_column, radius, self.matrix[test_row][test_column].startswith('C'))
+                # print(test_row, test_column, radius, self.matrix[test_row][test_column].startswith('C'))
                 if self.matrix[test_row][test_column].startswith('C'):
                     closest_coordinates.append(self.matrix[test_row][test_column][1:])
             if not closest_coordinates:
@@ -37,6 +37,7 @@ class ChronalCoordinates:
 
     def _fill_matrix(self):
         for row in range(self.MATRIX_SIZE):
+            print(row)
             for column in range(self.MATRIX_SIZE):
                 closest_coordinate = self._find_closest_coordinate(row, column)
                 self.matrix[row][column] = closest_coordinate
@@ -56,6 +57,7 @@ class ChronalCoordinates:
 
     def find_largest_area(self):
         self._place_coordinates()
+        self._fill_matrix()
         self._remove_non_candidates()
         finites = defaultdict(int)
         for row in range(self.MATRIX_SIZE):
@@ -63,6 +65,7 @@ class ChronalCoordinates:
                 value = self.matrix[row][column]
                 if value:
                     finites[value] += 1
+        print(finites)
         return sorted(finites.items(), key=lambda x: x[1], reverse=True)[0]
 
     def _chronal_generator(self, row, column, distance, max):
@@ -84,7 +87,7 @@ class ChronalCoordinates:
                 current_dir += 1
 
     def print_matrix(self):
-        for row in range(11):
-            for column in range(11):
+        for row in range(50):
+            for column in range(50):
                 print(':{} '.format(self.matrix[row][column]), end='', flush=True)
             print()
